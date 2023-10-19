@@ -2,6 +2,8 @@ from numba import cuda, float32
 import numpy as np
 import time
 import math
+import torch
+import matplotlib.pyplot as plt
 
 
 def tic():
@@ -21,12 +23,12 @@ def toc():
 
 
 def multiply_matrix(A, B):
-    tic()
     shape = int(len(A)), int(len(B[0]))
     if len(A) < len(B):
         exception = "Иди учи линейную алгебру, такие матрицы нельзя перемножить"
         return exception
     result = np.zeros(shape)
+    tic()
     for i in range(len(A)):
         # iterate through columns of B
         for j in range(len(B[0])):
@@ -37,35 +39,16 @@ def multiply_matrix(A, B):
     return running_time
 
 
-# CUDA kernel
-@cuda.jit
-def my_kernel(io_array):
-    pos = cuda.grid(1)
-    if pos < io_array.size:
-        io_array[pos] *= 2 # do the computation
-
-
-@cuda.jit
-def matmul_cuda(A, B):
-    """Perform square matrix multiplication of C = A * B
-    """
-    print("+++++++++++++")
-    shape_of_mat = int(len(A)), int(len(B[0]))
+def multiply_matrix_gpu(A, B):
+    #shape = int(len(A)), int(len(B[0]))
     if len(A) < len(B):
         exception = "Иди учи линейную алгебру, такие матрицы нельзя перемножить"
         return exception
-    C = np.zeros(shape_of_mat)
-    print("+++++++++++++")
-    i, j = cuda.grid(2)
-    print("+++++++++++++")
-    if i < C.shape[0] and j < C.shape[1]:
-        tmp = 0.
-        for k in range(A.shape[1]):
-            tmp += A[i, k] * B[k, j]
-        C[i, j] = tmp
-    #threadsperblock = shape_of_mat
-    #blockspergrid = math.ceil(С.shape[0] / threadsperblock)
-    print(C)
+    tic()
+    result = torch.matmul(A, B)
+    print(result)
+    running_time = toc()
+    return running_time
 
 
 def mat_generator(size_x, size_y, int_range=10):
@@ -74,10 +57,43 @@ def mat_generator(size_x, size_y, int_range=10):
     return array
 
 
+def mat_copy_gpu(matrix):
+    tensor1 = torch.from_numpy(matrix)
+    return tensor1
+
+
+def plotter(cpu_timings, gpu_timings, iter_list):
+    fig = plt.figure()
+    plt.plot(iter_list, cpu_timings, label='CPU')
+    plt.legend()
+    plt.plot(iter_list, gpu_timings, label='GPU')
+    plt.legend()
+    plt.grid()
+    plt.xlabel("Размеры квадратных матриц")
+    plt.ylabel("Время перемножения матриц, сек")
+    plt.show()
+    plt.savefig("figure.png")
+
+
 if __name__ == '__main__':
-    SIZE = 3
-    X = mat_generator(SIZE, SIZE)
-    Y = mat_generator(SIZE, SIZE)
-    print(multiply_matrix(X, Y))
-    print(np.matmul(X, Y))
-    print(matmul_cuda(X, Y))
+
+    max_size = 2000
+    min_size = 200
+    SIZE = min_size
+    step = 500
+
+    cpu_timings = []
+    gpu_timings = []
+    iter_list = []
+
+    while SIZE <= max_size:
+        X = mat_generator(SIZE, SIZE)
+        Y = mat_generator(SIZE, SIZE)
+        XG = mat_copy_gpu(X)
+        YG = mat_copy_gpu(Y)
+        cpu_timings.append(multiply_matrix(X, Y))
+        gpu_timings.append(multiply_matrix_gpu(XG, YG))
+        iter_list.append(SIZE)
+        SIZE = SIZE + step
+    plotter(cpu_timings, gpu_timings, iter_list)
+    print("done")
