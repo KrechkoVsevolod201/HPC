@@ -62,17 +62,18 @@ def mat_copy_gpu(matrix):
     return tensor1
 
 
-def plotter(cpu_timings, gpu_timings, iter_list):
-    fig = plt.figure()
+def plotter(cpu_timings, gpu_timings, iter_list, label_x, label_y):
+    # fig = plt.figure()
     plt.plot(iter_list, cpu_timings, label='CPU')
     plt.legend()
     plt.plot(iter_list, gpu_timings, label='GPU')
     plt.legend()
     plt.grid()
-    plt.xlabel("Размеры квадратных матриц")
-    plt.ylabel("Время перемножения матриц, сек")
-    plt.show()
+    plt.xlabel(label_x)
+    plt.ylabel(label_y)
+
     plt.savefig("figure.png")
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -86,6 +87,9 @@ if __name__ == '__main__':
     gpu_timings = []
     iter_list = []
 
+    label_x = "Размеры квадратных матриц"
+    label_y = "Время перемножения матриц, сек"
+
     while SIZE <= max_size:
         X = mat_generator(SIZE, SIZE)
         Y = mat_generator(SIZE, SIZE)
@@ -95,5 +99,5 @@ if __name__ == '__main__':
         gpu_timings.append(multiply_matrix_gpu(XG, YG))
         iter_list.append(SIZE)
         SIZE = SIZE + step
-    plotter(cpu_timings, gpu_timings, iter_list)
+    plotter(cpu_timings, gpu_timings, iter_list, label_x, label_y)
     print("done")
