@@ -78,10 +78,10 @@ def plotter(cpu_timings, gpu_timings, iter_list, label_x, label_y):
 
 if __name__ == '__main__':
 
-    max_size = 2000
-    min_size = 200
+    max_size = 200
+    min_size = 20
     SIZE = min_size
-    step = 500
+    step = 50
 
     cpu_timings = []
     gpu_timings = []
