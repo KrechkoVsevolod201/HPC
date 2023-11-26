@@ -60,7 +60,7 @@ def bilinear_interpolation_cpu(image, new_size):
 
 
 # Загрузка исходного изображения
-image = cv2.imread('smol.png')
+image = cv2.imread('../smol.png')
 
 # Указание нового размера (увеличение в 2 раза)
 new_size = (image.shape[0] * 2, image.shape[1] * 2)
@@ -69,4 +69,4 @@ print(new_size)
 interpolated_image = bilinear_interpolation_cpu(image, new_size)
 
 # Сохранение исходного и интерполированного изображений
-cv2.imwrite('Interpolated Image3.jpg', interpolated_image)
+cv2.imwrite('../Interpolated Image3.jpg', interpolated_image)

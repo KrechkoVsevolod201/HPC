@@ -67,7 +67,7 @@ def bilinear_interpolation_gpu(image, output_shape, timer_on=True):
 
 
 # Загрузка изображения
-image = cv2.imread('smol.png', cv2.IMREAD_GRAYSCALE)
+image = cv2.imread('../smol.png', cv2.IMREAD_GRAYSCALE)
 
 # Указание нового размера (увеличение в 2 раза)
 new_size = (image.shape[0] * 2, image.shape[1] * 2)
@@ -80,4 +80,4 @@ resized_image = cv2.resize(image, new_size)
 output_image = bilinear_interpolation_gpu(resized_image, new_size)
 
 # Сохранение исходного и интерполированного изображений
-cv2.imwrite('Interpolated Image2.jpg', output_image)
+cv2.imwrite('../Interpolated Image2.jpg', output_image)
