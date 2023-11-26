@@ -3,6 +3,7 @@ import numba
 import cv2
 import lab1.lab1_cpu_gpu_test
 
+
 @numba.njit
 def bilinear_interpolation_gpu(image, output_shape, timer_on=True):
     src_h, src_w = image.shape[:2]
