@@ -40,6 +40,7 @@ def bilinear_interpolation_gpu(image, output_shape, timer_on=True):
                 x_frac * y_frac * image[y_int_next, x_int_next]
             )
     flag = 0
+
     '''
     for y in range(dst_h):
         print(y)
