@@ -6,7 +6,6 @@ def bilinear_interpolation_cpu(image, new_size):
     # Получаем размеры исходного и нового изображений
     height, width = image.shape[:2]
     new_height, new_width = new_size
-
     # Вычисляем коэффициенты масштабирования по каждой оси
     scale_x = float(width) / new_width
     scale_y = float(height) / new_height
@@ -35,12 +34,33 @@ def bilinear_interpolation_cpu(image, new_size):
                                         + dx * (1 - dy) * image[y0, x1] \
                                         + (1 - dx) * dy * image[y1, x0] \
                                         + dx * dy * image[y1, x1]
+    flag = 0
+
+    for y in range(new_height):
+        print(y)
+        if (flag <= int(1 / scale_x)):
+            interpolation_image[y, 0] = image[int(y * scale_x -1), 0]
+            interpolation_image[y, 1] = image[int(y * scale_x-1), 1]
+            #print(image[1, int(y * scale_x)])
+            flag = flag + 1
+            if flag == int(1 / scale_x):
+                flag = 0
+
+    for x in range(new_width):
+        print(x)
+        if (flag <= int(1 / scale_x)):
+            interpolation_image[0, x] = image[0, int(x * scale_x -1)]
+            interpolation_image[1, x] = image[1, int(x * scale_x-1)]
+            #print(image[1, int(y * scale_x)])
+            flag = flag + 1
+            if flag == int(1 / scale_x):
+                flag = 0
 
     return interpolation_image
 
 
 # Загрузка исходного изображения
-image = cv2.imread('test.png')
+image = cv2.imread('smol.png')
 
 # Указание нового размера (увеличение в 2 раза)
 new_size = (image.shape[0] * 2, image.shape[1] * 2)
@@ -49,4 +69,4 @@ print(new_size)
 interpolated_image = bilinear_interpolation_cpu(image, new_size)
 
 # Сохранение исходного и интерполированного изображений
-cv2.imwrite('Interpolated Image2.jpg', interpolated_image)
+cv2.imwrite('Interpolated Image3.jpg', interpolated_image)

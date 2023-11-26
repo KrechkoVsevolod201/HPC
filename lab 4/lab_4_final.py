@@ -117,7 +117,7 @@ cv2.imwrite('Interpolated Image2.jpg', output_image)
 '''
 
 if __name__ == '__main__':
-    iterations = 15
+    iterations = 20
     size_mult = 2
     label_x = "Коэфициэнт интерполяции"
     label_y = "Время суммирования элементов, сек"
